@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="inventory-service" />
+        <module name="user-server" />
+        <module name="reporting-server" />
+        <module name="transaction-server" />
+        <module name="loan-server" />
+        <module name="eureka-server" />
+        <module name="notification-server" />
+        <module name="gateway" />
+        <module name="account-server" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="account-server" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
+      <module name="gateway" options="-parameters" />
+      <module name="inventory-service" options="-parameters" />
+      <module name="loan-server" options="-parameters" />
+      <module name="notification-server" options="-parameters" />
+      <module name="reporting-server" options="-parameters" />
+      <module name="transaction-server" options="-parameters" />
+      <module name="user-server" options="-parameters" />
+    </option>
+  </component>
+</project>
