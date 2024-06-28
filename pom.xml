@@ -10,13 +10,13 @@
 
     <modules>
         <module>account-service</module>
-        <!--<module>user-server</module>
-        <module>eureka-server</module>
-        <module>gateway</module>
-        <module>loan-server</module>
-        <module>notification-server</module>
-        <module>reporting-server</module>
-        <module>transaction-server</module>-->
+        <module>user-service</module>
+        <module>notification-service</module>
+        <module>eureka-service</module>
+        <module>gateway-service</module>
+        <module>loan-service</module>
+        <module>reporting-service</module>
+        <module>transaction-service</module>
 
     </modules>
 
