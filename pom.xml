@@ -9,14 +9,14 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>account-server</module>
-        <module>user-server</module>
+        <module>account-service</module>
+        <!--<module>user-server</module>
         <module>eureka-server</module>
         <module>gateway</module>
         <module>loan-server</module>
         <module>notification-server</module>
         <module>reporting-server</module>
-        <module>transaction-server</module>
+        <module>transaction-server</module>-->
 
     </modules>
 

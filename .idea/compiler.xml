@@ -7,21 +7,25 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="inventory-service" />
-        <module name="user-server" />
-        <module name="reporting-server" />
-        <module name="transaction-server" />
-        <module name="loan-server" />
-        <module name="eureka-server" />
-        <module name="notification-server" />
-        <module name="gateway" />
-        <module name="account-server" />
+        <module name="account-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="account-server" target="17" />
+      <module name="eureka-server" target="17" />
+      <module name="gateway" target="17" />
+      <module name="inventory-service" target="17" />
+      <module name="loan-server" target="17" />
+      <module name="notification-server" target="17" />
+      <module name="reporting-server" target="17" />
+      <module name="transaction-server" target="17" />
+      <module name="user-server" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="account-server" options="-parameters" />
+      <module name="account-service" options="" />
       <module name="eureka-server" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="inventory-service" options="-parameters" />

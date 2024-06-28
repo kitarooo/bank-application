@@ -8,12 +8,26 @@
         <option value="$PROJECT_DIR$/user-server/pom.xml" />
         <option value="$PROJECT_DIR$/account-server/pom.xml" />
         <option value="$PROJECT_DIR$/reporting-server/pom.xml" />
-        <option value="$PROJECT_DIR$/inventory-service/pom.xml" />
         <option value="$PROJECT_DIR$/transaction-server/pom.xml" />
         <option value="$PROJECT_DIR$/notification-server/pom.xml" />
         <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
         <option value="$PROJECT_DIR$/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/account-service/pom.xml" />
+        <option value="$USER_HOME$/Downloads/account-service/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/account-server/pom.xml" />
+        <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/loan-server/pom.xml" />
+        <option value="$PROJECT_DIR$/notification-server/pom.xml" />
+        <option value="$PROJECT_DIR$/reporting-server/pom.xml" />
+        <option value="$PROJECT_DIR$/transaction-server/pom.xml" />
+        <option value="$PROJECT_DIR$/user-server/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_20" default="true" project-jdk-name="20" project-jdk-type="JavaSDK">
