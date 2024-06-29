@@ -22,24 +22,10 @@ public class SecurityConfig extends WebSecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
 
     public String[] PERMIT_ALL = {
-            "/api/v1/users/**",
-            "/api/v1/news/all",
-            "/api/v1/news/{id}",
-            "/api/v1/product/{id}",
-            "/api/v1/products/all",
-            "/api/v1/orders/create",
-            "/swagger*/**",
-            "/swagger-ui/**",
-            "/backend/swagger-ui.html",
-            "/documentation/**",
-            "/v3/api-docs/**"
+            "/api/v1/auth/**"
     };
-
-    public String[] ADMIN = {
-            "/api/v1/news/createNews",
-            "/api/v1/products/add",
-            "/api/v1/orders/all",
-            "/api/v1/order/{id}"
+    public String[] USER = {
+            "/api/v1/users/**"
     };
 
     @Bean
@@ -47,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(ADMIN).hasRole("ADMIN")
+                        .requestMatchers(USER).hasRole("USER")
                         .requestMatchers(PERMIT_ALL).permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)
