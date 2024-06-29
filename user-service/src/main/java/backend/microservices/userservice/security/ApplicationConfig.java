@@ -1,6 +1,7 @@
-package backend.microservices.testproject.security;
+package backend.microservices.userservice.security;
 
-import backend.microservices.testproject.repository.UserRepository;
+import backend.microservices.userservice.repository.UserRepository;
+import backend.microservices.userservice.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> (UserDetails) userRepository.findUserByUsername(username)
+        return username -> (UserDetails) userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
     }
 }

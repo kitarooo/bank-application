@@ -1,2 +1,4 @@
-package backend.microservices.userservice.controller;public class UserController {
+package backend.microservices.userservice.controller;
+
+public class UserController {
 }

@@ -1,6 +1,6 @@
-package backend.microservices.testproject.security;
+package backend.microservices.userservice.security;
 
-import backend.microservices.testproject.security.jwt.JwtAuthenticationFilter;
+import backend.microservices.userservice.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
