@@ -25,7 +25,8 @@ public class SecurityConfig extends WebSecurityConfiguration {
             "/api/v1/auth/**"
     };
     public String[] USER = {
-            "/api/v1/users/**"
+            "/api/v1/users/**",
+            "/api/v1/accounts/**"
     };
 
     @Bean

@@ -1,5 +1,5 @@
 services:
-  postgres:
+  postgres-user:
     container_name: user-postgres
     image: postgres
     environment:
@@ -8,7 +8,21 @@ services:
       POSTGRES_PASSWORD: password
       PGDATA: /data/postgres
     volumes:
-      - ./postgres-inventory:/data/postgres
+      - ./postgres-user:/data/postgres
     ports:
       - "3333:5432"
+    restart: always
+
+  postgres-account:
+    container_name: account-postgres
+    image: postgres
+    environment:
+      POSTGRES_DB: account
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres-account:/data/postgres
+    ports:
+      - "3332:5432"
     restart: always
