@@ -27,8 +27,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     String username;
+
+    @Column(name = "email", unique = true)
+    String email;
 
     @Column(name = "passoword")
     String password;
@@ -39,7 +42,7 @@ public class User implements UserDetails {
     @Column(name = "lastname")
     String lastname;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", unique = true)
     String phoneNumber;
 
     @Enumerated(EnumType.STRING)

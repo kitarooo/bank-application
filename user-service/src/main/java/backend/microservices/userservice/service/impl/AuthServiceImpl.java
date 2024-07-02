@@ -28,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
 
         User user = User.builder()
                 .username(request.getUsername())
+                .email(request.getEmail())
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .phoneNumber(request.getPhoneNumber())

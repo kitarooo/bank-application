@@ -1,17 +1,10 @@
 package backend.microservices.userservice.service.impl;
 
-import backend.microservices.userservice.dto.request.LoginRequest;
-import backend.microservices.userservice.dto.request.RegistrationRequest;
 import backend.microservices.userservice.dto.request.UserRequest;
-import backend.microservices.userservice.dto.response.AuthenticationResponse;
 import backend.microservices.userservice.dto.response.UserResponse;
 import backend.microservices.userservice.entity.User;
-import backend.microservices.userservice.entity.enums.Role;
-import backend.microservices.userservice.exception.IncorrectDataException;
 import backend.microservices.userservice.exception.NotFoundException;
-import backend.microservices.userservice.exception.UserAlreadyExistException;
 import backend.microservices.userservice.repository.UserRepository;
-import backend.microservices.userservice.security.jwt.JwtService;
 import backend.microservices.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +21,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден!"));
 
+        user.setEmail(request.getEmail());
         user.setFirstname(request.getFirstname());
         user.setLastname(request.getLastname());
         user.setUsername(request.getUsername());
