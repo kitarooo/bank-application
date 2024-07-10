@@ -1,6 +1,6 @@
 package backend.microservices.service.impl;
 
-import backend.microservices.account.event.AccountCreatedRequest.AccountCreatedRequest;
+import backend.microservices.account.event.AccountCreatedRequest;
 import backend.microservices.exception.SendMessageException;
 import backend.microservices.service.NotificationService;
 import lombok.RequiredArgsConstructor;

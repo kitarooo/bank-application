@@ -6,7 +6,7 @@ import backend.microservices.account.entity.Account;
 import backend.microservices.account.entity.enums.Blocked;
 import backend.microservices.account.entity.enums.Deleted;
 import backend.microservices.account.entity.enums.Status;
-import backend.microservices.account.event.AccountCreatedRequest.AccountCreatedRequest;
+import backend.microservices.account.event.AccountCreatedRequest;
 import backend.microservices.account.repository.AccountRepository;
 import backend.microservices.account.service.AccountService;
 import backend.microservices.account.dto.request.AccountUpdateBalanceRepost;

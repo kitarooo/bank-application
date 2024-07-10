@@ -1,6 +1,6 @@
 package backend.microservices.service;
 
-import backend.microservices.account.event.AccountCreatedRequest.AccountCreatedRequest;
+import backend.microservices.account.event.AccountCreatedRequest;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.transaction.annotation.Transactional;
 

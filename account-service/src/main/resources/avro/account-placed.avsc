@@ -1,9 +1,0 @@
-{
-  "type": "record",
-  "name": "AccountCreatedRequest",
-  "namespace": "backend.microservices.account.event.AccountCreatedRequest",
-  "fields": [
-    { "name": "accountNumber", "type": "string" },
-    { "name": "email", "type": "string" }
-  ]
-}
