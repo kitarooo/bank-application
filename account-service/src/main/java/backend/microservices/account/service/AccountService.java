@@ -12,7 +12,7 @@ public interface AccountService {
     String createAccount(AccountRequest request, String token);
     AccountFullResponse updateAccount(AccountUpdateRequest request, String token, Long id);
     String updateBalance(String token, AccountUpdateBalanceRepost money, Long id);
-    AccountFullResponse getAccount(String token, Long id);
+    AccountFullResponse getAccount(Long id);
     List<Account> getAllMyAccounts(String token);
     String deleteAccount(Long id,String token);
     List<Account> getDeletedAccounts(String token);

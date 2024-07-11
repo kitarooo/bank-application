@@ -39,9 +39,8 @@ public class AccountController {
     }
 
     @GetMapping("{id}")
-    public AccountFullResponse getAccountById(@RequestHeader("Authorization") String token,
-                                              @PathVariable Long id) {
-        return accountService.getAccount(token,id);
+    public AccountFullResponse getAccountById(@PathVariable Long id) {
+        return accountService.getAccount(id);
     }
 
     @GetMapping
@@ -53,5 +52,10 @@ public class AccountController {
     public String deleteAccountById(@RequestHeader("Authorization") String token,
                                     @PathVariable Long id) {
         return accountService.deleteAccount(id, token);
+    }
+
+    @GetMapping("/deleted")
+    public List<Account> getDeletedAccounts(@RequestHeader("Authorization") String token) {
+        return accountService.getDeletedAccounts(token);
     }
 }

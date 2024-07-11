@@ -7,6 +7,7 @@ import backend.microservices.account.entity.enums.Blocked;
 import backend.microservices.account.entity.enums.Deleted;
 import backend.microservices.account.entity.enums.Status;
 import backend.microservices.account.event.AccountCreatedRequest;
+import backend.microservices.account.exception.AccountAlreadyExistException;
 import backend.microservices.account.repository.AccountRepository;
 import backend.microservices.account.service.AccountService;
 import backend.microservices.account.dto.request.AccountUpdateBalanceRepost;
@@ -34,8 +35,10 @@ public class AccountServiceImpl implements AccountService {
     public String createAccount(AccountRequest request, String token) {
         Long userId = jwtService.extractUserId(token);
         String email = jwtService.extractEmail(token);
-
-        Account tempAccount = Account.builder()
+        if (accountRepository.findAByAccountNumber(request.accountNumber()).isPresent()) {
+            throw new AccountAlreadyExistException("Счет с такими данными уже существует!");
+        }
+        Account accountTemp = Account.builder()
                 .accountNumber(request.accountNumber())
                 .balance(BigDecimal.valueOf(0))
                 .currency(request.currency())
@@ -46,7 +49,7 @@ public class AccountServiceImpl implements AccountService {
                 .deleted(Deleted.NOT_DELETED)
                 .build();
         Account account = new Account();
-        account = accountRepository.save(tempAccount);
+        account = accountRepository.save(accountTemp);
 
         AccountCreatedRequest createdRequest = new AccountCreatedRequest(request.accountNumber(),email);
         log.info("Start send message to broker {}", createdRequest);
@@ -96,11 +99,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountFullResponse getAccount(String token, Long id) {
-        Long userId = jwtService.extractUserId(token);
-        Account account = accountRepository.findByUserId(userId)
+    public AccountFullResponse getAccount(Long id) {
+        Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Аккаунт не найден!"));
-    // add validated
         return AccountFullResponse.builder()
                 .accountNumber(account.getAccountNumber())
                 .currency(account.getCurrency())
@@ -116,17 +117,17 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String deleteAccount(Long id, String token) {
-        Long userId = jwtService.extractUserId(token);
-        Account account = accountRepository.findByUserId(userId)
+        Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Аккаунт не найден!"));
         account.setDeleted(Deleted.DELETED);
-        account.setId(null);
         account.setBlocked(Blocked.ISBLOCKED);
         account.setStatus(Status.INACTIVE);
         account.setBalance(null);
         account.setCurrency(null);
         account.setCreatedAt(null);
         account.setUpdatedAt(null);
+
+        accountRepository.save(account);
         return "Счет успешно удален!";
     }
 
@@ -135,7 +136,8 @@ public class AccountServiceImpl implements AccountService {
         Long userId = jwtService.extractUserId(token);
         List<Account> accounts =  accountRepository.findAllByUserId(userId);
         return accounts.stream()
-                .filter(account -> account.getDeleted().equals(Deleted.DELETED))
+                .filter(account ->
+                        account.getDeleted().equals(Deleted.DELETED))
                 .toList();
     }
 

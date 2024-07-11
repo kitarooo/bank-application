@@ -7,6 +7,7 @@ import backend.microservices.account.entity.enums.Currency;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class Account {
     @Column(name = "user_id")
     Long userId;
 
+    @Length(max = 16)
     @Column(name = "account_number")
     String accountNumber;
 

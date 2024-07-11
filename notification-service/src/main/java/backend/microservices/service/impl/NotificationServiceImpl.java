@@ -26,8 +26,6 @@ public class NotificationServiceImpl implements NotificationService {
             messageHelper.setTo(request.getEmail().toString());
             messageHelper.setSubject(String.format("Your Account successfully created!", request.getAccountNumber()));
             messageHelper.setText(String.format("""
-                            Hi %s,%s
- 
                             Your Account successfully created!.
                              
                             Notification Service
