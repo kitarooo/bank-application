@@ -4,6 +4,7 @@ import backend.microservices.account.dto.request.AccountRequest;
 import backend.microservices.account.dto.response.AccountFullResponse;
 import backend.microservices.account.entity.Account;
 import backend.microservices.account.entity.enums.Blocked;
+import backend.microservices.account.entity.enums.Currency;
 import backend.microservices.account.entity.enums.Deleted;
 import backend.microservices.account.entity.enums.Status;
 import backend.microservices.account.event.AccountCreatedRequest;
@@ -23,13 +24,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final JwtService jwtService;
     private final AccountRepository accountRepository;
     private final KafkaTemplate<String, AccountCreatedRequest> kafkaTemplate;
+    private final CurrencyServiceImpl currencyService;
 
     @Override
     public String createAccount(AccountRequest request, String token) {
@@ -65,7 +67,20 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Аккаунт не найден!"));
-        if (userId.equals(account.getUserId())) {
+        if (userId.equals(account.getUserId()) && account.getDeleted().equals(Deleted.NOT_DELETED)) {
+            if (request.currency().equals(Currency.USD) && account.getCurrency().equals(Currency.KZT)) {
+                account.setBalance(currencyService.mapTengeToUsd(account.getBalance()));
+            } else if (request.currency().equals(Currency.USD) && account.getCurrency().equals(Currency.RUB)) {
+                account.setBalance(currencyService.mapRubToUsd(account.getBalance()));
+            } else if (request.currency().equals(Currency.RUB) && account.getCurrency().equals(Currency.KZT)) {
+                account.setBalance(currencyService.mapTengeToRub(account.getBalance()));
+            } else if (request.currency().equals(Currency.RUB) && account.getCurrency().equals(Currency.USD)) {
+                account.setBalance(currencyService.mapUsdToRub(account.getBalance()));
+            } else if (request.currency().equals(Currency.KZT) && account.getCurrency().equals(Currency.USD)) {
+                account.setBalance(currencyService.mapUsdToTenge(account.getBalance()));
+            } else if (request.currency().equals(Currency.KZT) && account.getCurrency().equals(Currency.RUB)) {
+                account.setBalance(currencyService.mapRubToTenge(account.getBalance()));
+            }
             account.setAccountNumber(request.accountNumber());
             account.setCurrency(request.currency());
             accountRepository.save(account);
@@ -87,7 +102,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Аккаунт не найден!"));
 
-        if (userId.equals(account.getUserId())) {
+        if (userId.equals(account.getUserId()) && account.getDeleted().equals(Deleted.NOT_DELETED)) {
             account.setUpdatedAt(LocalDateTime.now());
             account.setBalance(account.getBalance().add(money.money()));
             accountRepository.save(account);
@@ -102,17 +117,24 @@ public class AccountServiceImpl implements AccountService {
     public AccountFullResponse getAccount(Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Аккаунт не найден!"));
-        return AccountFullResponse.builder()
-                .accountNumber(account.getAccountNumber())
-                .currency(account.getCurrency())
-                .balance(account.getBalance())
-                .build();
+        if (account.getDeleted().equals(Deleted.NOT_DELETED)) {
+            return AccountFullResponse.builder()
+                    .accountNumber(account.getAccountNumber())
+                    .currency(account.getCurrency())
+                    .balance(account.getBalance())
+                    .build();
+        } else {
+            throw new NotFoundException("Аккаунт не найден!");
+        }
     }
 
     @Override
     public List<Account> getAllMyAccounts(String token) {
         Long userId = jwtService.extractUserId(token);
-        return accountRepository.findAllByUserId(userId);
+        List<Account> accounts = accountRepository.findAllByUserId(userId);
+        return accounts.stream()
+                .filter(account -> account.getDeleted().equals(Deleted.NOT_DELETED))
+                .toList();
     }
 
     @Override
@@ -124,7 +146,6 @@ public class AccountServiceImpl implements AccountService {
         account.setStatus(Status.INACTIVE);
         account.setBalance(null);
         account.setCurrency(null);
-        account.setCreatedAt(null);
         account.setUpdatedAt(null);
 
         accountRepository.save(account);
@@ -141,5 +162,17 @@ public class AccountServiceImpl implements AccountService {
                 .toList();
     }
 
-
+    @Override
+    public String recoverAccount(Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Аккаунт не найден!"));
+        account.setDeleted(Deleted.NOT_DELETED);
+        account.setBlocked(Blocked.UNBLOCKED);
+        account.setStatus(Status.ACTIVE);
+        account.setBalance(null);
+        account.setCurrency(null);
+        account.setUpdatedAt(LocalDateTime.now());
+        accountRepository.save(account);
+        return "Аккаунт успешно восстановлен!";
+    }
 }

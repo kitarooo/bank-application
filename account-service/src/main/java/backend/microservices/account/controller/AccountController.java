@@ -58,4 +58,9 @@ public class AccountController {
     public List<Account> getDeletedAccounts(@RequestHeader("Authorization") String token) {
         return accountService.getDeletedAccounts(token);
     }
+
+    @PostMapping("/recover/{id}")
+    public String recoverAccount(@PathVariable Long id) {
+        return accountService.recoverAccount(id);
+    }
 }
