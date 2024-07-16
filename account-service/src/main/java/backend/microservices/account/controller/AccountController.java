@@ -1,6 +1,7 @@
 package backend.microservices.account.controller;
 
 import backend.microservices.account.dto.request.AccountRequest;
+import backend.microservices.account.dto.response.AccountBalance;
 import backend.microservices.account.dto.response.AccountFullResponse;
 import backend.microservices.account.entity.Account;
 import backend.microservices.account.service.impl.AccountServiceImpl;
@@ -9,6 +10,7 @@ import backend.microservices.account.dto.request.AccountUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -62,5 +64,10 @@ public class AccountController {
     @PostMapping("/recover/{id}")
     public String recoverAccount(@PathVariable Long id) {
         return accountService.recoverAccount(id);
+    }
+
+    @GetMapping("/balance/{accountNumber}")
+    public AccountBalance getBalanceByUserId(@PathVariable String accountNumber) {
+        return accountService.getBalanceByAccountNumber(accountNumber);
     }
 }

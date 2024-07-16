@@ -1,13 +1,15 @@
 package backend.microservices.account.service.impl;
 
 import backend.microservices.account.dto.request.AccountRequest;
+import backend.microservices.account.dto.response.AccountBalance;
 import backend.microservices.account.dto.response.AccountFullResponse;
 import backend.microservices.account.entity.Account;
 import backend.microservices.account.entity.enums.Blocked;
 import backend.microservices.account.entity.enums.Currency;
 import backend.microservices.account.entity.enums.Deleted;
 import backend.microservices.account.entity.enums.Status;
-import backend.microservices.account.event.AccountCreatedRequest;
+import backend.microservices.account.kafka.event.AccountCreatedRequest;
+import backend.microservices.account.kafka.event.UpdateBalanceRequest;
 import backend.microservices.account.exception.AccountAlreadyExistException;
 import backend.microservices.account.repository.AccountRepository;
 import backend.microservices.account.service.AccountService;
@@ -30,7 +32,7 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
     private final JwtService jwtService;
     private final AccountRepository accountRepository;
-    private final KafkaTemplate<String, AccountCreatedRequest> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     private final CurrencyServiceImpl currencyService;
 
     @Override
@@ -58,6 +60,7 @@ public class AccountServiceImpl implements AccountService {
         kafkaTemplate.send("account-placed", createdRequest);
         log.info("End message to broker {}", createdRequest);
         log.info("Account successfully created!");
+
         return "Вы успешно создали счет!";
     }
 
@@ -103,10 +106,17 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new NotFoundException("Аккаунт не найден!"));
 
         if (userId.equals(account.getUserId()) && account.getDeleted().equals(Deleted.NOT_DELETED)) {
+            String email = jwtService.extractEmail(token);
             account.setUpdatedAt(LocalDateTime.now());
             account.setBalance(account.getBalance().add(money.money()));
             accountRepository.save(account);
-            //TODO kafka from notification-service
+
+            UpdateBalanceRequest updateBalanceRequest = new UpdateBalanceRequest(email,account.getAccountNumber());
+            log.info("Start send message to broker {}", updateBalanceRequest);
+            kafkaTemplate.send("account-balance-updated", updateBalanceRequest);
+            log.info("End message to broker {}", updateBalanceRequest);
+            log.info("Счет успешно пополнен");
+
             return "Счет успешно пополнен!";
         } else {
             throw new NotFoundException("Аккаунт не найден!");
@@ -175,4 +185,17 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
         return "Аккаунт успешно восстановлен!";
     }
+
+    @Override
+    public AccountBalance getBalanceByAccountNumber(String accountNumber) {
+        BigDecimal balance = accountRepository.findBalanceByAccountNumber(accountNumber);
+        if (balance != null) {
+            return AccountBalance.builder()
+                    .balance(balance)
+                    .build();
+        } else {
+            throw new NotFoundException("Счет не найден!");
+        }
+    }
+
 }

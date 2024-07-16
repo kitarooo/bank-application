@@ -6,7 +6,7 @@ import backend.microservices.account.entity.enums.Blocked;
 import backend.microservices.account.entity.enums.Currency;
 import backend.microservices.account.entity.enums.Deleted;
 import backend.microservices.account.entity.enums.Status;
-import backend.microservices.account.event.AccountCreatedRequest;
+import backend.microservices.account.kafka.event.AccountCreatedRequest;
 import backend.microservices.account.exception.AccountAlreadyExistException;
 import backend.microservices.account.repository.AccountRepository;
 import backend.microservices.account.service.JwtService;

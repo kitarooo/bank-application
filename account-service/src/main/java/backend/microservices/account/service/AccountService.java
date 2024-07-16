@@ -1,11 +1,13 @@
 package backend.microservices.account.service;
 
 import backend.microservices.account.dto.request.AccountRequest;
+import backend.microservices.account.dto.response.AccountBalance;
 import backend.microservices.account.dto.response.AccountFullResponse;
 import backend.microservices.account.entity.Account;
 import backend.microservices.account.dto.request.AccountUpdateBalanceRepost;
 import backend.microservices.account.dto.request.AccountUpdateRequest;
 import jakarta.transaction.Transactional;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,4 +21,5 @@ public interface AccountService {
     String deleteAccount(Long id,String token);
     List<Account> getDeletedAccounts(String token);
     String recoverAccount(Long id);
+    AccountBalance getBalanceByAccountNumber(String accountNumber);
 }
