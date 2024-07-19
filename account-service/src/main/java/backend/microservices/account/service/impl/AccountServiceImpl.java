@@ -57,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
 
         AccountCreatedRequest createdRequest = new AccountCreatedRequest(request.accountNumber(),email);
         log.info("Start send message to broker {}", createdRequest);
-        kafkaTemplate.send("account-placed", createdRequest);
+        kafkaTemplate.send("account-event", 0, "create", createdRequest);
         log.info("End message to broker {}", createdRequest);
         log.info("Account successfully created!");
 
@@ -113,7 +113,7 @@ public class AccountServiceImpl implements AccountService {
 
             UpdateBalanceRequest updateBalanceRequest = new UpdateBalanceRequest(email,account.getAccountNumber());
             log.info("Start send message to broker {}", updateBalanceRequest);
-            kafkaTemplate.send("account-balance-updated", updateBalanceRequest);
+            kafkaTemplate.send("account-event", 1, "update", updateBalanceRequest);
             log.info("End message to broker {}", updateBalanceRequest);
             log.info("Счет успешно пополнен");
 
@@ -154,8 +154,7 @@ public class AccountServiceImpl implements AccountService {
         account.setDeleted(Deleted.DELETED);
         account.setBlocked(Blocked.ISBLOCKED);
         account.setStatus(Status.INACTIVE);
-        account.setBalance(null);
-        account.setCurrency(null);
+        account.setBalance(BigDecimal.ZERO);
         account.setUpdatedAt(null);
 
         accountRepository.save(account);
@@ -179,8 +178,7 @@ public class AccountServiceImpl implements AccountService {
         account.setDeleted(Deleted.NOT_DELETED);
         account.setBlocked(Blocked.UNBLOCKED);
         account.setStatus(Status.ACTIVE);
-        account.setBalance(null);
-        account.setCurrency(null);
+        account.setBalance(BigDecimal.ZERO);
         account.setUpdatedAt(LocalDateTime.now());
         accountRepository.save(account);
         return "Аккаунт успешно восстановлен!";
