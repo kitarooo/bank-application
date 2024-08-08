@@ -20,6 +20,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+
     @Override
     public String registration(RegistrationRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {

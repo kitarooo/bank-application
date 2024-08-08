@@ -23,6 +23,14 @@ spring:
           filters:
             - AuthenticationFilter
 
+
+        - id: transaction-service
+          uri: lb://TRANSACTION-SERVICE
+          predicates:
+            - Path=/api/v1/transactions/**
+          filters:
+            - AuthenticationFilter
+
   application:
     name: GATEWAY-SERVICE
 

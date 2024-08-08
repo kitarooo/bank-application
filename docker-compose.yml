@@ -1,6 +1,7 @@
 services:
+# DB CONFIGS
   postgres-user:
-    container_name: user-postgres
+    container_name: postgres-user
     image: postgres
     environment:
       POSTGRES_DB: userDb
@@ -11,9 +12,11 @@ services:
       - ./postgres-user:/data/postgres
     ports:
       - "3333:5432"
+    networks:
+      - bank-network
 
   postgres-account:
-    container_name: account-postgres
+    container_name: postgres-account
     image: postgres
     environment:
       POSTGRES_DB: account
@@ -24,20 +27,40 @@ services:
       - ./postgres-account:/data/postgres
     ports:
       - "3332:5432"
+    networks:
+      - bank-network
 
+  postgres-transaction:
+    container_name: postgres-transaction
+    image: postgres
+    environment:
+      POSTGRES_DB: transaction
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres-transaction:/data/postgres
+    ports:
+      - "3331:5432"
+    networks:
+      - bank-network
+
+# KAFKA CONFIGS
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
-    hostname: zookeeper
     container_name: zookeeper
     ports:
       - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - bank-network
 
-  broker:
+  broker-1:
     image: confluentinc/cp-kafka:7.5.0
-    container_name: broker
+    container_name: broker-1
+    hostname: broker-1
     ports:
       - "9092:9092"
       - "29092:29092"
@@ -47,21 +70,12 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT, PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092, PLAINTEXT_HOST://localhost:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
-
-  schema_registry:
-    image: confluentinc/cp-schema-registry:7.5.0
-    hostname: schema-registry
-    container_name: schema-registry
-    depends_on:
-      - broker
-    ports:
-      - "8085:8081"
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
-      SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8081
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-1:29092, PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    networks:
+      - bank-network
 
   kafka-ui:
     container_name: kafka-ui
@@ -69,37 +83,15 @@ services:
     ports:
       - "8086:8080"
     depends_on:
-      - broker
-      - schema_registry
+      - broker-1
     environment:
       KAFKA_CLUSTERS_NAME: local
-      KAFKA_CLUSTERS_BOOTSTRAPSERVERS: broker:29092
+      KAFKA_CLUSTERS_BOOTSTRAPSERVERS: 'broker-1:29092,broker-2:29093,broker-3:29094'
       KAFKA_CLUSTERS_SCHEMAREGISTRY: http://schema-registry:8081
       DYNAMIC_CONFIG_ENABLED: 'true'
+    networks:
+      - bank-network
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+networks:
+  bank-network:
+    driver: bridge

@@ -1,7 +1,7 @@
 package backend.microservices.service.impl;
 
-import backend.microservices.account.kafka.event.AccountCreatedRequest;
-import backend.microservices.account.kafka.event.UpdateBalanceRequest;
+import backend.microservices.kafka.event.AccountCreatedRequest;
+import backend.microservices.kafka.event.UpdateBalanceRequest;
 import backend.microservices.exception.SendMessageException;
 import backend.microservices.external.AccountBalance;
 import backend.microservices.service.NotificationService;
@@ -25,7 +25,6 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void successfullyCreatedAccountMessage(AccountCreatedRequest request) {
-        log.info("Got Message from account-placed topic {}", request);
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom("spring-bank@gmail.com");
@@ -50,9 +49,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void successUpdateBalance(UpdateBalanceRequest request) {
-        AccountBalance accountBalance = restTemplate.getForObject("http://ACCOUNT-SERVICE:8082/api/v1/accounts/balance/" + request.getAccountNumber(),
+        AccountBalance accountBalance = restTemplate.getForObject("http://account-service:8082/api/v1/accounts/balance/" + request.getAccountNumber(),
                 AccountBalance.class);
-        log.info("Got Message from account-placed topic {}", request);
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom("spring-bank@gmail.com");
@@ -70,7 +68,6 @@ public class NotificationServiceImpl implements NotificationService {
         };
         try {
             javaMailSender.send(messagePreparator);
-            log.info("Account Notification email sent!!");
         } catch (MailException e) {
             log.error("Exception occurred when sending mail", e);
             throw new SendMessageException("Exception occurred when sending mail to springshop@gmail.com");
