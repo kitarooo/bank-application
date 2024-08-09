@@ -1,7 +1,7 @@
 package backend.microservices.service.impl;
 
-import backend.microservices.kafka.event.AccountCreatedRequest;
-import backend.microservices.kafka.event.UpdateBalanceRequest;
+import backend.microservices.account.kafka.event.AccountCreatedRequest;
+import backend.microservices.account.kafka.event.UpdateBalanceRequest;
 import backend.microservices.exception.SendMessageException;
 import backend.microservices.external.AccountBalance;
 import backend.microservices.service.NotificationService;

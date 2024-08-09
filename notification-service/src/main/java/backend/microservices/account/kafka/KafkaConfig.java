@@ -1,7 +1,7 @@
-package backend.microservices.kafka;
+package backend.microservices.account.kafka;
 
-import backend.microservices.kafka.event.AccountCreatedRequest;
-import backend.microservices.kafka.event.UpdateBalanceRequest;
+import backend.microservices.account.kafka.event.AccountCreatedRequest;
+import backend.microservices.account.kafka.event.UpdateBalanceRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +28,7 @@ public class KafkaConfig {
     public JsonDeserializer<Object> jsonDeserializer() {
         JsonDeserializer<Object> deserializer = new JsonDeserializer<>();
         deserializer.setTypeMapper(typeMapper());
-        deserializer.addTrustedPackages("backend.microservices.account.kafka.event");
+        deserializer.addTrustedPackages("backend.microservices.account.event");
         return deserializer;
     }
 

@@ -21,7 +21,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final JwtService jwtService;
 
     @Override
     public String transactionTransfer(String token, CreateTransactionRequest createTransactionRequest) {

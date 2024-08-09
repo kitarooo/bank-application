@@ -1,7 +1,7 @@
 package backend.microservices.service;
 
-import backend.microservices.kafka.event.AccountCreatedRequest;
-import backend.microservices.kafka.event.UpdateBalanceRequest;
+import backend.microservices.account.kafka.event.AccountCreatedRequest;
+import backend.microservices.account.kafka.event.UpdateBalanceRequest;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.transaction.annotation.Transactional;

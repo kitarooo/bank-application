@@ -1,8 +1,9 @@
-/*
 package backend.microservices.kafka;
 
-import backend.microservices.kafka.event.AccountCreatedRequest;
-import backend.microservices.kafka.event.UpdateBalanceRequest;
+import backend.microservices.account.kafka.event.AccountCreatedRequest;
+import backend.microservices.account.kafka.event.UpdateBalanceRequest;
+import backend.microservices.transactionservice.kafka.event.TransactionDescendingBalance;
+import backend.microservices.transactionservice.kafka.event.TransactionUpdateBalance;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -29,6 +30,8 @@ public class KafkaConfig {
         DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
         Map<String, Class<?>> mappings = new HashMap<>();
         mappings.put("AccountCreatedRequest", AccountCreatedRequest.class);
+        mappings.put("TransactionUpdateBalance", TransactionUpdateBalance.class);
+        mappings.put("TransactionDescendingBalance", TransactionDescendingBalance.class);
         mappings.put("UpdateBalanceRequest", UpdateBalanceRequest.class);
         typeMapper.setIdClassMapping(mappings);
         return typeMapper;
@@ -38,7 +41,7 @@ public class KafkaConfig {
     public JsonDeserializer<Object> jsonDeserializer() {
         JsonDeserializer<Object> deserializer = new JsonDeserializer<>();
         deserializer.setTypeMapper(typeMapper());
-        deserializer.addTrustedPackages("backend.microservices.kafka.event");
+        deserializer.addTrustedPackages("backend.microservices.account.kafka.event", "backend.microservices.transactionservice.kafka.event");
         return deserializer;
     }
 
@@ -53,4 +56,3 @@ public class KafkaConfig {
         return new StringJsonMessageConverter(objectMapper());
     }
 }
-*/
