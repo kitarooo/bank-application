@@ -42,6 +42,7 @@ public class TransactionServiceImpl implements TransactionService {
         kafkaTemplate.send("transaction-event", 1, "descending",descendingBalanceRequest);
         log.info("end transaction transfer... {}", createTransactionRequest);
         transaction.setAccountTo(createTransactionRequest.getAccountTo());
+        transaction.setAccountFrom(createTransactionRequest.getAccountFrom());
         transaction.setAmount(createTransactionRequest.getAmount());
         transaction.setTransactionType(createTransactionRequest.getTransactionType());
         transaction.setDescription(createTransactionRequest.getDescription());

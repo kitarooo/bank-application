@@ -1,8 +1,9 @@
-/*
-package backend.microservices.kafka;
+package backend.microservices.transactionservice.kafka;
 
 import backend.microservices.kafka.event.AccountCreatedRequest;
 import backend.microservices.kafka.event.UpdateBalanceRequest;
+import backend.microservices.transactionservice.kafka.event.TransactionDescendingBalance;
+import backend.microservices.transactionservice.kafka.event.TransactionUpdateBalance;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -29,6 +30,8 @@ public class KafkaConfig {
         DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
         Map<String, Class<?>> mappings = new HashMap<>();
         mappings.put("AccountCreatedRequest", AccountCreatedRequest.class);
+        mappings.put("TransactionUpdateBalance", TransactionUpdateBalance.class);
+        mappings.put("TransactionDescendingBalance", TransactionDescendingBalance.class);
         mappings.put("UpdateBalanceRequest", UpdateBalanceRequest.class);
         typeMapper.setIdClassMapping(mappings);
         return typeMapper;
@@ -53,4 +56,3 @@ public class KafkaConfig {
         return new StringJsonMessageConverter(objectMapper());
     }
 }
-*/

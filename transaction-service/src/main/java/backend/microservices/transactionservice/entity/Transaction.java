@@ -25,7 +25,9 @@ public class Transaction {
     Long accountFrom;
     Long accountTo;
     BigDecimal amount;
+    @Enumerated(EnumType.STRING)
     Currency currency;
+    @Enumerated(EnumType.STRING)
     TransactionType transactionType;
     LocalDateTime transferTime;
     String description;
