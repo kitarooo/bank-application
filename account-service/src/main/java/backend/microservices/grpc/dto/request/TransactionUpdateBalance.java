@@ -1,4 +1,4 @@
-package backend.microservices.transactionservice.kafka.event;
+package backend.microservices.grpc.dto.request;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TransactionDescendingBalance {
+public class TransactionUpdateBalance {
     Long id;
-    String token;
     BigDecimal amount;
 }

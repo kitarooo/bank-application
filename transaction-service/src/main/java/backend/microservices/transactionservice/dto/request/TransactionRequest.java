@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateTransactionRequest {
+public class TransactionRequest {
     Long accountFrom;
     Long accountTo;
     BigDecimal amount;

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "main.proto";
+option java_outer_classname = "ApplicationProto";
+option objc_class_prefix = "RTG";
+
+package account;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+
+service AccountService {
+  rpc updateBalance(TransactionUpdateBalance) returns (google.protobuf.Empty);
+  rpc descendingBalance(TransactionDescendingBalance) returns (google.protobuf.Empty);
+}
+
+message TransactionDescendingBalance {
+  int64 id = 1;
+  string token = 2;
+  BigDecimal amount = 3;
+}
+
+message TransactionUpdateBalance {
+  int64 id = 1;
+  BigDecimal amount = 2;
+}
+
+message BigDecimal {
+  int64 unscaledValue = 1;
+  int32 scale = 2;
+}

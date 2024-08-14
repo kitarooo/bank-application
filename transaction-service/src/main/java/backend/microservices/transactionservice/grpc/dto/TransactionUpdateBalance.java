@@ -1,4 +1,4 @@
-package backend.microservices.transactionservice.kafka.event;
+package backend.microservices.transactionservice.grpc.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

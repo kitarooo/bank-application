@@ -1,53 +1,54 @@
 package backend.microservices.transactionservice.service.impl;
 
-import backend.microservices.transactionservice.dto.request.CreateTransactionRequest;
-import backend.microservices.transactionservice.kafka.event.TransactionDescendingBalance;
+import backend.microservices.transactionservice.dto.request.TransactionRequest;
 import backend.microservices.transactionservice.entity.Transaction;
-import backend.microservices.transactionservice.kafka.event.TransactionUpdateBalance;
+import backend.microservices.transactionservice.grpc.BigDecimalConverter;
 import backend.microservices.transactionservice.repository.TransactionRepository;
-import backend.microservices.transactionservice.service.JwtService;
 import backend.microservices.transactionservice.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
+import main.proto.AccountServiceGrpc;
+import main.proto.TransactionDescendingBalance;
+import main.proto.TransactionUpdateBalance;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
 
+    @GrpcClient("accountService")
+    private AccountServiceGrpc.AccountServiceBlockingStub accountServiceStub;
+
     private final TransactionRepository transactionRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
-    public String transactionTransfer(String token, CreateTransactionRequest createTransactionRequest) {
-        log.info("start transaction transfer... {}", createTransactionRequest);
-        Transaction transaction = new Transaction();
+    public String transactionTransfer(String token, TransactionRequest request) {
+        TransactionUpdateBalance transactionUpdateBalance = TransactionUpdateBalance.newBuilder()
+                .setId(request.getAccountTo())
+                .setAmount(BigDecimalConverter.toProto(request.getAmount()))
+                .build();
 
-        // Send to kafka topic for update balance
-        TransactionUpdateBalance updateBalanceRequest = new TransactionUpdateBalance();
-        updateBalanceRequest.setId(createTransactionRequest.getAccountTo());
-        updateBalanceRequest.setAmount(createTransactionRequest.getAmount());
-        kafkaTemplate.send("transaction-event", 0, "update",updateBalanceRequest);
+        TransactionDescendingBalance transactionDescendingBalance = TransactionDescendingBalance.newBuilder()
+                .setAmount(BigDecimalConverter.toProto(request.getAmount()))
+                .setId(request.getAccountTo())
+                .setToken(token)
+                .build();
 
-        // Send to kafka topic for descending balance
-        TransactionDescendingBalance descendingBalanceRequest = new TransactionDescendingBalance();
-        descendingBalanceRequest.setId(createTransactionRequest.getAccountFrom());
-        descendingBalanceRequest.setToken(token);
-        descendingBalanceRequest.setAmount(createTransactionRequest.getAmount());
-        kafkaTemplate.send("transaction-event", 1, "descending",descendingBalanceRequest);
-        log.info("end transaction transfer... {}", createTransactionRequest);
-        transaction.setAccountTo(createTransactionRequest.getAccountTo());
-        transaction.setAccountFrom(createTransactionRequest.getAccountFrom());
-        transaction.setAmount(createTransactionRequest.getAmount());
-        transaction.setTransactionType(createTransactionRequest.getTransactionType());
-        transaction.setDescription(createTransactionRequest.getDescription());
-        transaction.setTransferTime(LocalDateTime.now());
+        accountServiceStub.updateBalance(transactionUpdateBalance);
+        accountServiceStub.descendingBalance(transactionDescendingBalance);
+
+        Transaction transaction = Transaction.builder()
+                .accountTo(request.getAccountTo())
+                .accountFrom(request.getAccountFrom())
+                .transactionType(request.getTransactionType())
+                .amount(request.getAmount())
+                .description(request.getDescription())
+                .build();
         transactionRepository.save(transaction);
 
-        return "Перевод успешно выполнен!";
+        return "Вы успешно совершили перевод!";
     }
 }
+
