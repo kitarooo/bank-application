@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class TransactionRequest {
     Long accountFrom;
     Long accountTo;
-    BigDecimal amount;
+    Long amount;
     // TODO add DEPOSIT-SERVICE for different enums
     TransactionType transactionType;
     String description;

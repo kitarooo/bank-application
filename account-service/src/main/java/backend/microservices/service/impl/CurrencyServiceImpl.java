@@ -8,32 +8,38 @@ import java.math.RoundingMode;
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
     @Override
-    public BigDecimal mapTengeToRub(BigDecimal tenge) {
-        return tenge.divide(new BigDecimal("5.45"), 2, RoundingMode.HALF_UP);
+    public Long mapTengeToRub(Long tenge) {
+        //return tenge.divide(new BigDecimal("5.45"), 2, RoundingMode.HALF_UP);
+        return tenge * 5;
     }
 
     @Override
-    public BigDecimal mapTengeToUsd(BigDecimal tenge) {
-        return tenge.divide(new BigDecimal("473.94"), 2, RoundingMode.HALF_UP);
+    public Long mapTengeToUsd(Long tenge) {
+        //return tenge.divide(new BigDecimal("473.94"), 2, RoundingMode.HALF_UP);
+        return tenge * 470;
     }
 
     @Override
-    public BigDecimal mapRubToTenge(BigDecimal rub) {
-        return rub.multiply(new BigDecimal("5.45")).setScale(2, RoundingMode.HALF_UP);
+    public Long mapRubToTenge(Long rub) {
+        //return rub.multiply(new BigDecimal("5.45")).setScale(2, RoundingMode.HALF_UP);
+        return rub / 5;
     }
 
     @Override
-    public BigDecimal mapRubToUsd(BigDecimal rub) {
-        return rub.divide(new BigDecimal("87.0"), 2, RoundingMode.HALF_UP);
+    public Long mapRubToUsd(Long rub) {
+        //return rub.divide(new BigDecimal("87.0"), 2, RoundingMode.HALF_UP);
+        return rub * 87;
     }
 
     @Override
-    public BigDecimal mapUsdToTenge(BigDecimal usd) {
-        return usd.multiply(new BigDecimal("473.94")).setScale(2, RoundingMode.HALF_UP);
+    public Long mapUsdToTenge(Long usd) {
+        //return usd.multiply(new BigDecimal("473.94")).setScale(2, RoundingMode.HALF_UP);
+        return usd / 5;
     }
 
     @Override
-    public BigDecimal mapUsdToRub(BigDecimal usd) {
-        return usd.multiply(new BigDecimal("87.0")).setScale(2, RoundingMode.HALF_UP); // умножение с указанием точности и режима округления
+    public Long mapUsdToRub(Long usd) {
+        //return usd.multiply(new BigDecimal("87.0")).setScale(2, RoundingMode.HALF_UP); // умножение с указанием точности и режима округления
+        return usd / 87;
     }
 }

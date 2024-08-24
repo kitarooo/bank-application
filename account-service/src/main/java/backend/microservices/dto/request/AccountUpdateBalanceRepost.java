@@ -1,6 +1,16 @@
 package backend.microservices.dto.request;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.math.BigDecimal;
 
-public record AccountUpdateBalanceRepost(BigDecimal money) {
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class AccountUpdateBalanceRepost {
+    Long money;
 }

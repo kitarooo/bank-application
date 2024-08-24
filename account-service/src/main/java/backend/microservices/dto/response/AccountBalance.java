@@ -12,5 +12,5 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountBalance {
-    private BigDecimal balance;
+    private Long balance;
 }

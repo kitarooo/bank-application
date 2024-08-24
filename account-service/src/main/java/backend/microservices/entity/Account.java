@@ -34,7 +34,7 @@ public class Account {
     String accountNumber;
 
     @Column(name = "balance")
-    BigDecimal balance = BigDecimal.ZERO;
+    Long balance;
 
     @Enumerated(EnumType.STRING)
     Currency currency;

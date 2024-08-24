@@ -1,10 +1,19 @@
 package backend.microservices.dto.response;
 
 import backend.microservices.entity.enums.Currency;
-import lombok.Builder;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
+@Getter
+@Setter
 @Builder
-public record AccountFullResponse(String accountNumber, Currency currency, BigDecimal balance) {
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class AccountFullResponse {
+    String accountNumber;
+    Currency currency;
+    Long balance;
 }

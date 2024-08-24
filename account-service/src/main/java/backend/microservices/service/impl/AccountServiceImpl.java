@@ -39,13 +39,13 @@ public class AccountServiceImpl implements AccountService {
     public String createAccount(AccountRequest request, String token) {
         Long userId = jwtService.extractUserId(token);
         String email = jwtService.extractEmail(token);
-        if (accountRepository.findAByAccountNumber(request.accountNumber()).isPresent()) {
+        if (accountRepository.findAByAccountNumber(request.getAccountNumber()).isPresent()) {
             throw new AccountAlreadyExistException("Счет с такими данными уже существует!");
         }
         Account accountTemp = Account.builder()
-                .accountNumber(request.accountNumber())
-                .balance(BigDecimal.valueOf(0))
-                .currency(request.currency())
+                .accountNumber(request.getAccountNumber())
+                .balance(0L)
+                .currency(request.getCurrency())
                 .createdAt(LocalDateTime.now())
                 .userId(userId)
                 .blocked(Blocked.UNBLOCKED)
@@ -55,7 +55,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account();
         account = accountRepository.save(accountTemp);
 
-        AccountCreatedRequest createdRequest = new AccountCreatedRequest(email,request.accountNumber());
+        AccountCreatedRequest createdRequest = new AccountCreatedRequest(email,request.getAccountNumber());
         log.info("Start send message to broker {}", createdRequest);
         kafkaTemplate.send("account-event", 0, "create", createdRequest);
         log.info("End message to broker {}", createdRequest);
@@ -71,21 +71,21 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Аккаунт не найден!"));
         if (userId.equals(account.getUserId()) && account.getDeleted().equals(Deleted.NOT_DELETED)) {
-            if (request.currency().equals(Currency.USD) && account.getCurrency().equals(Currency.KZT)) {
+            if (request.getCurrency().equals(Currency.USD) && account.getCurrency().equals(Currency.KZT)) {
                 account.setBalance(currencyService.mapTengeToUsd(account.getBalance()));
-            } else if (request.currency().equals(Currency.USD) && account.getCurrency().equals(Currency.RUB)) {
+            } else if (request.getCurrency().equals(Currency.USD) && account.getCurrency().equals(Currency.RUB)) {
                 account.setBalance(currencyService.mapRubToUsd(account.getBalance()));
-            } else if (request.currency().equals(Currency.RUB) && account.getCurrency().equals(Currency.KZT)) {
+            } else if (request.getCurrency().equals(Currency.RUB) && account.getCurrency().equals(Currency.KZT)) {
                 account.setBalance(currencyService.mapTengeToRub(account.getBalance()));
-            } else if (request.currency().equals(Currency.RUB) && account.getCurrency().equals(Currency.USD)) {
+            } else if (request.getCurrency().equals(Currency.RUB) && account.getCurrency().equals(Currency.USD)) {
                 account.setBalance(currencyService.mapUsdToRub(account.getBalance()));
-            } else if (request.currency().equals(Currency.KZT) && account.getCurrency().equals(Currency.USD)) {
+            } else if (request.getCurrency().equals(Currency.KZT) && account.getCurrency().equals(Currency.USD)) {
                 account.setBalance(currencyService.mapUsdToTenge(account.getBalance()));
-            } else if (request.currency().equals(Currency.KZT) && account.getCurrency().equals(Currency.RUB)) {
+            } else if (request.getCurrency().equals(Currency.KZT) && account.getCurrency().equals(Currency.RUB)) {
                 account.setBalance(currencyService.mapRubToTenge(account.getBalance()));
             }
-            account.setAccountNumber(request.accountNumber());
-            account.setCurrency(request.currency());
+            account.setAccountNumber(request.getAccountNumber());
+            account.setCurrency(request.getCurrency());
             accountRepository.save(account);
 
             return AccountFullResponse.builder()
@@ -108,7 +108,8 @@ public class AccountServiceImpl implements AccountService {
         if (userId.equals(account.getUserId()) && account.getDeleted().equals(Deleted.NOT_DELETED)) {
             String email = jwtService.extractEmail(token);
             account.setUpdatedAt(LocalDateTime.now());
-            account.setBalance(account.getBalance().add(money.money()));
+           // account.setBalance(account.getBalance().add(money.money()));
+            account.setBalance(account.getBalance() + money.getMoney());
             accountRepository.save(account);
 
             UpdateBalanceRequest updateBalanceRequest = new UpdateBalanceRequest(email,account.getAccountNumber());
@@ -154,7 +155,7 @@ public class AccountServiceImpl implements AccountService {
         account.setDeleted(Deleted.DELETED);
         account.setBlocked(Blocked.ISBLOCKED);
         account.setStatus(Status.INACTIVE);
-        account.setBalance(BigDecimal.ZERO);
+        account.setBalance(0L);
         account.setUpdatedAt(null);
 
         accountRepository.save(account);
@@ -179,7 +180,7 @@ public class AccountServiceImpl implements AccountService {
         account.setDeleted(Deleted.NOT_DELETED);
         account.setBlocked(Blocked.UNBLOCKED);
         account.setStatus(Status.ACTIVE);
-        account.setBalance(BigDecimal.ZERO);
+        account.setBalance(0L);
         account.setUpdatedAt(LocalDateTime.now());
         accountRepository.save(account);
         return "Аккаунт успешно восстановлен!";
@@ -187,7 +188,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountBalance getBalanceByAccountNumber(String accountNumber) {
-        BigDecimal balance = accountRepository.findBalanceByAccountNumber(accountNumber);
+        Long balance = accountRepository.findBalanceByAccountNumber(accountNumber);
         if (balance != null) {
             return AccountBalance.builder()
                     .balance(balance)

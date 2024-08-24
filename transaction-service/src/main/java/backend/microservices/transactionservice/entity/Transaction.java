@@ -24,7 +24,7 @@ public class Transaction {
     Long id;
     Long accountFrom;
     Long accountTo;
-    BigDecimal amount;
+    Long amount;
     @Enumerated(EnumType.STRING)
     Currency currency;
     @Enumerated(EnumType.STRING)
