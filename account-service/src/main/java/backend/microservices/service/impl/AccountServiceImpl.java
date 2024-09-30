@@ -1,6 +1,10 @@
 package backend.microservices.service.impl;
 
+import backend.microservices.account.kafka.event.AccountCreatedRequest;
+import backend.microservices.account.kafka.event.UpdateBalanceRequest;
 import backend.microservices.dto.request.AccountRequest;
+import backend.microservices.dto.request.AccountUpdateBalanceRepost;
+import backend.microservices.dto.request.AccountUpdateRequest;
 import backend.microservices.dto.response.AccountBalance;
 import backend.microservices.dto.response.AccountFullResponse;
 import backend.microservices.entity.Account;
@@ -9,20 +13,15 @@ import backend.microservices.entity.enums.Currency;
 import backend.microservices.entity.enums.Deleted;
 import backend.microservices.entity.enums.Status;
 import backend.microservices.exception.AccountAlreadyExistException;
-import backend.microservices.account.kafka.event.AccountCreatedRequest;
-import backend.microservices.account.kafka.event.UpdateBalanceRequest;
+import backend.microservices.exception.NotFoundException;
 import backend.microservices.repository.AccountRepository;
 import backend.microservices.service.AccountService;
-import backend.microservices.dto.request.AccountUpdateBalanceRepost;
-import backend.microservices.dto.request.AccountUpdateRequest;
-import backend.microservices.exception.NotFoundException;
 import backend.microservices.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 

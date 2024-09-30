@@ -12,7 +12,8 @@ public class TransactionalController {
     private final TransactionService transactionService;
 
     @PostMapping("/transfer")
-    public String transfer(@RequestBody TransactionRequest request) {
-        return transactionService.transactionTransfer(request);
+    public String transfer(@RequestBody TransactionRequest request,
+                           @RequestHeader("Authorization") String token) {
+        return transactionService.transactionTransfer(token,request);
     }
 }

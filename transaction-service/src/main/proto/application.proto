@@ -14,6 +14,8 @@ import "google/protobuf/empty.proto";
 service AccountService {
   rpc updateBalance(TransactionUpdateBalance) returns (google.protobuf.Empty);
   rpc descendingBalance(TransactionDescendingBalance) returns (google.protobuf.Empty);
+  rpc checkBalance(BalanceCheckRequest) returns (BalanceCheckResponse);
+
 }
 
 message TransactionDescendingBalance {
@@ -24,4 +26,12 @@ message TransactionDescendingBalance {
 message TransactionUpdateBalance {
   int64 id = 1;
   int64 amount = 2;
+}
+
+message BalanceCheckRequest {
+  int64 id = 1;
+}
+
+message BalanceCheckResponse {
+  bool success = 1;
 }

@@ -1,6 +1,7 @@
 package backend.microservices.exception.handler;
 
 import backend.microservices.exception.AccountAlreadyExistException;
+import backend.microservices.exception.InsufficientFundException;
 import backend.microservices.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,4 +22,11 @@ public class ExcHandler {
     public ExceptionResponse accountAlreadyExistException(AccountAlreadyExistException e) {
         return new ExceptionResponse(HttpStatus.FOUND, e.getClass().getName(), e.getMessage());
     }
+
+    @ExceptionHandler(InsufficientFundException.class)
+    @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
+    public ExceptionResponse insufficientFundException(InsufficientFundException e) {
+        return new ExceptionResponse(HttpStatus.PAYMENT_REQUIRED, e.getClass().getName(), e.getMessage());
+    }
+
 }

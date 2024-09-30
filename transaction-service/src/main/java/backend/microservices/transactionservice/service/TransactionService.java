@@ -7,6 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(isolation = Isolation.SERIALIZABLE)
 public interface TransactionService {
 
-    String transactionTransfer(TransactionRequest request);
+    String transactionTransfer(String token, TransactionRequest request);
 
 }
